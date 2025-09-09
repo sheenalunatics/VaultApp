@@ -1,15 +1,16 @@
 
 import React, { useState, useCallback } from 'react';
 import type { Credential } from '../types';
-import { EyeIcon, EyeOffIcon, EditIcon, TrashIcon, CopyIcon, CheckIcon } from './Icons';
+import { EyeIcon, EyeOffIcon, EditIcon, TrashIcon, CopyIcon, CheckIcon, TagIcon } from './Icons';
 
 interface CredentialItemProps {
   credential: Credential;
   onEdit: () => void;
   onDelete: () => void;
+  categoryName?: string;
 }
 
-const CredentialItem: React.FC<CredentialItemProps> = ({ credential, onEdit, onDelete }) => {
+const CredentialItem: React.FC<CredentialItemProps> = ({ credential, onEdit, onDelete, categoryName }) => {
   const [isPasswordVisible, setIsPasswordVisible] = useState(false);
   const [isCopied, setIsCopied] = useState(false);
 
@@ -38,8 +39,16 @@ const CredentialItem: React.FC<CredentialItemProps> = ({ credential, onEdit, onD
   return (
     <div className="bg-brand-surface rounded-lg shadow-lg p-4 transition-shadow hover:shadow-xl flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 border border-brand-border">
       <div className="flex-1 min-w-0">
-        <p className="text-lg font-bold text-brand-text-primary truncate">{credential.site}</p>
-        <p className="text-sm text-brand-text-secondary truncate">{credential.username}</p>
+        <div className="flex items-center gap-3">
+          <p className="text-lg font-bold text-brand-text-primary truncate">{credential.site}</p>
+           {categoryName && (
+                <span className="flex-shrink-0 inline-flex items-center gap-1.5 bg-brand-primary/20 text-brand-primary text-xs font-medium px-2 py-1 rounded-full">
+                    <TagIcon className="w-3.5 h-3.5" />
+                    {categoryName}
+                </span>
+            )}
+        </div>
+        <p className="text-sm text-brand-text-secondary truncate mt-1">{credential.username}</p>
         <div className="flex items-center mt-2">
             <input
                 type={isPasswordVisible ? 'text' : 'password'}

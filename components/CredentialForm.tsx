@@ -1,18 +1,20 @@
 
 import React, { useState, useEffect } from 'react';
-import type { Credential, CredentialInput } from '../types';
+import type { Credential, CredentialInput, Category } from '../types';
 
 interface CredentialFormProps {
   onSubmit: (data: CredentialInput) => void;
   onCancel: () => void;
   initialData: Credential | null;
+  categories: Category[];
 }
 
-const CredentialForm: React.FC<CredentialFormProps> = ({ onSubmit, onCancel, initialData }) => {
+const CredentialForm: React.FC<CredentialFormProps> = ({ onSubmit, onCancel, initialData, categories }) => {
   const [formData, setFormData] = useState<CredentialInput>({
     site: '',
     username: '',
     password: '',
+    categoryId: undefined,
   });
 
   useEffect(() => {
@@ -21,11 +23,12 @@ const CredentialForm: React.FC<CredentialFormProps> = ({ onSubmit, onCancel, ini
         site: initialData.site,
         username: initialData.username,
         password: initialData.password,
+        categoryId: initialData.categoryId,
       });
     }
   }, [initialData]);
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
     setFormData(prev => ({ ...prev, [name]: value }));
   };
@@ -33,7 +36,11 @@ const CredentialForm: React.FC<CredentialFormProps> = ({ onSubmit, onCancel, ini
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (formData.site && formData.username && formData.password) {
-      onSubmit(formData);
+      const dataToSubmit = {
+          ...formData,
+          categoryId: formData.categoryId === '' ? undefined : formData.categoryId
+      };
+      onSubmit(dataToSubmit);
     } else {
       alert('Please fill out all fields.');
     }
@@ -74,6 +81,21 @@ const CredentialForm: React.FC<CredentialFormProps> = ({ onSubmit, onCancel, ini
           required
           className="mt-1 block w-full bg-brand-bg border border-brand-border rounded-md shadow-sm py-2 px-3 text-brand-text-primary focus:outline-none focus:ring-brand-primary focus:border-brand-primary sm:text-sm"
         />
+      </div>
+      <div>
+        <label htmlFor="categoryId" className="block text-sm font-medium text-brand-text-secondary">Category</label>
+        <select
+          name="categoryId"
+          id="categoryId"
+          value={formData.categoryId || ''}
+          onChange={handleChange}
+          className="mt-1 block w-full bg-brand-bg border border-brand-border rounded-md shadow-sm py-2 px-3 text-brand-text-primary focus:outline-none focus:ring-brand-primary focus:border-brand-primary sm:text-sm"
+        >
+          <option value="">No Category</option>
+          {categories.map(category => (
+            <option key={category.id} value={category.id}>{category.name}</option>
+          ))}
+        </select>
       </div>
       <div>
         <label htmlFor="password" className="block text-sm font-medium text-brand-text-secondary">Password</label>
