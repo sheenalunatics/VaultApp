@@ -1,0 +1,5 @@
+{
+  "name": "Password Vault",
+  "description": "A simple client-side application to securely store and manage your passwords. All data is stored locally in your browser and is not sent to any server. This is intended for demonstration purposes; for highly sensitive data, always use a reputable, encrypted password manager.",
+  "requestFramePermissions": []
+}
